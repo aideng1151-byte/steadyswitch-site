@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Steady Switch: Shopify legacy customer accounts migration</title>
+<meta name="description" content="Fixed-price migration from Shopify's legacy customer accounts to the new passwordless accounts. Free one-page readiness check for your store.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2316191d'/%3E%3Cpath d='M4 22h9c5 0 6-12 15-12' fill='none' stroke='%2345c08f' stroke-width='4'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f4f1ea; --ink: #16191d; --soft: #565a5f; --rule: #16191d;
+  --hair: #c9c4b8; --new: #0b6e4f; --old: #b4431f;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 18px/1.5 "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif; }
+a { color: inherit; text-underline-offset: 3px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+header { display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+  padding: 24px 0 14px; border-bottom: 3px solid var(--rule); }
+.mark { font-weight: 900; font-size: 20px; letter-spacing: -.01em; text-decoration: none; }
+header a:last-child { font-size: 16px; }
+h1 { font-size: clamp(38px, 6.4vw, 72px); line-height: 1.02; letter-spacing: -.025em; font-weight: 900;
+  margin: 56px 0 20px; max-width: 15em; }
+h1 span { display: block; }
+.lede { font-size: clamp(19px, 2.2vw, 23px); line-height: 1.4; max-width: 34em; margin: 0 0 28px; }
+.cta { display: inline-block; background: var(--ink); color: var(--paper); font-weight: 700; padding: 14px 22px;
+  text-decoration: none; }
+.cta:hover, .cta:focus-visible { background: var(--new); }
+.track { display: block; width: 100%; height: auto; margin: 56px 0 8px; }
+.track text { font: 700 15px "Schibsted Grotesk", Arial, sans-serif; }
+section { display: grid; grid-template-columns: 240px 1fr; gap: 16px 48px; padding: 36px 0 44px;
+  border-top: 1px solid var(--rule); }
+h2 { font-size: 22px; line-height: 1.2; font-weight: 900; letter-spacing: -.01em; margin: 0; }
+section p { margin: 0 0 14px; max-width: 36em; }
+.parts { margin: 0; }
+.parts div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; padding: 12px 0;
+  border-bottom: 1px solid var(--hair); }
+.parts div:first-child { padding-top: 0; }
+.parts dt { font-weight: 700; }
+.parts dd { margin: 0; color: var(--soft); }
+ol.steps { list-style: none; margin: 0; padding: 0; counter-reset: s; }
+ol.steps li { counter-increment: s; display: grid; grid-template-columns: 44px 1fr; padding: 0 0 14px; }
+ol.steps li::before { content: counter(s); font-weight: 900; font-size: 24px; line-height: 1.15; }
+ol.steps b { display: block; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; vertical-align: top; padding: 12px 24px 12px 0; border-bottom: 1px solid var(--hair); font-weight: 400; }
+tbody th { font-weight: 700; white-space: nowrap; }
+td.price { font-weight: 900; font-size: 22px; line-height: 1.2; white-space: nowrap; font-variant-numeric: tabular-nums; padding-right: 0; text-align: right; }
+.note { color: var(--soft); font-size: 16px; margin: 14px 0 0; }
+.ask { background: var(--ink); color: var(--paper); margin-top: 8px; padding: 44px 0 48px; }
+.ask h2 { font-size: clamp(30px, 4.4vw, 46px); line-height: 1.06; letter-spacing: -.02em; margin: 0 0 14px; max-width: 16em; }
+.ask p { margin: 0 0 22px; max-width: 34em; }
+.ask .cta { background: var(--paper); color: var(--ink); }
+.ask .cta:hover, .ask .cta:focus-visible { background: #45c08f; }
+footer { padding: 22px 0 36px; font-size: 15px; color: var(--soft); }
+footer p { margin: 0 0 6px; max-width: 46em; }
+@media (max-width: 760px) {
+  body { font-size: 17px; }
+  .wrap { padding: 0 16px; }
+  h1 { margin-top: 36px; }
+  .track { margin-top: 36px; }
+  section { grid-template-columns: 1fr; padding: 28px 0 32px; }
+  .parts div { grid-template-columns: 1fr; gap: 2px; }
+  th, td { padding-right: 12px; }
+  tbody tr { display: grid; grid-template-columns: 1fr auto; }
+  tbody td:not(.price) { grid-column: 1 / -1; grid-row: 2; padding-top: 0; }
+  tbody th, td.price { border-bottom: 0; padding-bottom: 2px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="mark" href="/">Steady Switch</a>
+    <a href="mailto:aiden@steadyswitch.com">aiden@steadyswitch.com</a>
+  </header>
+
+  <main>
+    <h1>Shopify is retiring legacy customer accounts. <span>I move your store across.</span></h1>
+    <p class="lede">Shopify deprecated them in February 2026 and hasn't announced the shutdown date yet. Anything custom in your login and signup forms has to be rebuilt first. It's one job, at a fixed price.</p>
+    <a class="cta" href="mailto:aiden@steadyswitch.com?subject=Free%20readiness%20check&amp;body=Store%20URL%3A%20">Get a free readiness check</a>
+
+    <svg class="track" viewBox="0 0 1016 150" role="img" aria-label="Diagram: the legacy accounts line ends at a stop, and a switch moves your store onto the new customer accounts line.">
+      <path d="M0 108H690" fill="none" stroke="#b4431f" stroke-width="6"/>
+      <path d="M690 92v32" fill="none" stroke="#b4431f" stroke-width="10"/>
+      <path d="M0 108H270C390 108 400 30 520 30H1016" fill="none" stroke="#0b6e4f" stroke-width="6"/>
+      <circle cx="270" cy="108" r="11" fill="#f4f1ea" stroke="#16191d" stroke-width="5"/>
+      <text x="0" y="96" fill="#16191d">Your store</text>
+      <text x="710" y="113" fill="#b4431f">Legacy accounts end</text>
+      <text x="1016" y="18" fill="#0b6e4f" text-anchor="end">New customer accounts</text>
+      <text x="270" y="142" fill="#16191d" text-anchor="middle">The switch</text>
+    </svg>
+
+    <section>
+      <h2>What has to be rebuilt</h2>
+      <dl class="parts">
+        <div><dt>Custom signup fields</dt><dd>Moved to customer metafields, with existing values migrated.</dd></div>
+        <div><dt>Consent and terms checkboxes</dt><dd>Recreated with the same wording. Existing consent records are kept.</dd></div>
+        <div><dt>Tags set at signup</dt><dd>Segmentation and wholesale logic rebuilt with Shopify Flow or an app.</dd></div>
+        <div><dt>Loyalty, login and wishlist apps</dt><dd>Checked against the new account pages, then re-tested.</dd></div>
+        <div><dt>Password-based flows</dt><dd>Customers sign in with one-time codes, so emails, help pages and sign-in links get updated.</dd></div>
+      </dl>
+    </section>
+
+    <section>
+      <h2>How it works</h2>
+      <ol class="steps">
+        <li><span><b>Free check</b>A one-page report built from your public pages. No login needed.</span></li>
+        <li><span><b>Fixed quote</b>I confirm the scope against your theme and apps with admin access you grant.</span></li>
+        <li><span><b>Rebuild</b>The work happens on a staging theme, away from your live store.</span></li>
+        <li><span><b>Switch</b>New accounts go live at a quiet time, with a fallback plan, followed by a full re-test.</span></li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Fixed prices</h2>
+      <div>
+        <table>
+          <tbody>
+            <tr><th scope="row">Simple</th><td>Nothing custom on your login or signup pages.</td><td class="price">$500–1,500</td></tr>
+            <tr><th scope="row">Moderate</th><td>One to three custom fields or apps.</td><td class="price">$1,500–3,000</td></tr>
+            <tr><th scope="row">Involved</th><td>Four or more, or wholesale logic.</td><td class="price">$3,000–5,000</td></tr>
+          </tbody>
+        </table>
+        <p class="note">You get one agreed price before any work starts.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Agencies</h2>
+      <p>Have clients still on legacy accounts? I can take these migrations as a subcontractor, at a fixed price per store, so your team stays on bigger work.</p>
+    </section>
+  </main>
+</div>
+
+<div class="ask">
+  <div class="wrap">
+    <h2>Send me your store URL. I'll tell you what needs moving.</h2>
+    <p>You'll get the one-page check for free, and it's yours to keep whether or not you hire me.</p>
+    <a class="cta" href="mailto:aiden@steadyswitch.com?subject=Free%20readiness%20check&amp;body=Store%20URL%3A%20">Email Aiden</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <footer>
+    <p>Steady Switch is run by Aiden Gandhi in Washington State.</p>
+    <p>Independent service, not affiliated with or endorsed by Shopify. Source: <a href="https://shopify.dev/changelog/legacy-customer-accounts-are-deprecated">Shopify's deprecation notice</a>.</p>
+  </footer>
+</div>
+</body>
+</html>
